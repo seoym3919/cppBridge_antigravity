@@ -1,0 +1,22 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "cppbridge",
+  "version": "0.1.0",
+  "description": "Converts legacy and modern C/C++ (C89/C99/C11/C++11/C++17/C++20) scientific algorithms and systems code into idiomatic, vectorized scientific Python (NumPy, SciPy, Numba, Dataclasses), featuring automated pointer-to-slice conversions, struct-to-dataclass modernization, pybind11 wrapper generation, and closed-loop equivalence verification.",
+  "author": {
+    "name": "scienceStack & Antigravity Scientific Team"
+  },
+  "homepage": "https://github.com/seoym3919/cppBridge_antigravity",
+  "repository": "https://github.com/seoym3919/cppBridge_antigravity",
+  "license": "MIT",
+  "keywords": [
+    "c-to-python",
+    "cpp-to-python",
+    "numpy-vectorization",
+    "depointerize",
+    "pybind11",
+    "dataclasses",
+    "scientific-computing",
+    "code-translation"
+  ]
+}

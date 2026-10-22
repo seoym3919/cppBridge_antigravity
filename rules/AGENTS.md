@@ -1,0 +1,14 @@
+# cppBridge Antigravity Directives
+
+1. **Subagent Routing**:
+   - Master C/C++ translation & architecture: `invoke_subagent` (`TypeName`: `"cpp-to-python-architect"`, `Model`: `"pro"`).
+   - NumPy array vectorization & loop optimization: `invoke_subagent` (`TypeName`: `"numpy-vectorizer"`, `Model`: `"flash"`).
+   - Memory de-pointerization & slice safety: `invoke_subagent` (`TypeName`: `"memory-de-pointer"`, `Model`: `"flash"`).
+   - Struct & class modernizer (Dataclasses, OOP): `invoke_subagent` (`TypeName`: `"oop-modernizer"`, `Model`: `"flash"`).
+
+2. **Translation & Porting Standards**:
+   - **Pointer Elimination**: Convert raw pointers (`T*`, `malloc`, `new[]`) into NumPy arrays (`np.ndarray`) and slices. Never keep raw address manipulation or integer pointer casts in Python.
+   - **Dataclass Encapsulation**: Map C `struct` and `typedef struct` directly into Python `@dataclass` models and companion NumPy `np.dtype` structured arrays.
+   - **Loop Vectorization**: Replace scalar array element loops with single-instruction NumPy vector expressions (`a * b + c`). For complex recurrences that cannot be vectorized, use Numba `@njit`.
+   - **Format String Modernization**: Transform all `printf`, `sprintf`, `fprintf`, and `std::cout` statements into Python 3 f-strings with matching width and precision specifiers.
+   - **Closed-Loop Verification**: Always verify translated code with `scripts/cpp_python_verifier.py` to confirm mathematical output equivalence ($L_2 < 10^{-12}$).

@@ -1,5 +1,6 @@
 ---
 name: cpp-to-python-architect
+model: pro
 description: Translates C/C++ codebases into vectorized scientific Python (NumPy/SciPy/Numba/Dataclasses) or pybind11 extensions with pointer elimination.
 ---
 

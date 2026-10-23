@@ -100,12 +100,9 @@ Within the Antigravity chat interface, users interact directly with modernizatio
 \end{itemize}
 
 \subsection{Subagent Delegation Architecture}
-Complex modernization tasks are automatically routed to specialized subagents:
+Complex modernization tasks are automatically routed to the specialized modernization subagent:
 \begin{itemize}
-    \item \textbf{\texttt{cpp-to-python-architect}} (\texttt{Model: "pro"}): Lead modernization architect. Manages codebase traversal, multi-file include DAG linking, and package generation.
-    \item \textbf{\texttt{numpy-vectorizer}} (\texttt{Model: "flash"}): High-performance NumPy array vectorization and Numba specialist.
-    \item \textbf{\texttt{memory-de-pointer}} (\texttt{Model: "flash"}): Pointer de-referencing and slice safety specialist.
-    \item \textbf{\texttt{oop-modernizer}} (\texttt{Model: "flash"}): Struct, union, and class modernization engineer.
+    \item \textbf{\texttt{cpp-to-python-architect}} (\texttt{Model: "pro"} --- \texttt{claude-opus-5-5-high} / \texttt{claude-sonnet-5-5-high} / \texttt{gemini-4-argon-high}): Lead modernization architect. Manages codebase traversal, multi-file include DAG linking, pointer elimination, NumPy/Numba vectorization, dataclass modernization, and package generation.
 \end{itemize}
 
 \subsection{How to Use: Standalone Command-Line Execution}

@@ -70,11 +70,8 @@ In the Antigravity chat, interact directly with C/C++ modernization skills targe
 
 #### Method B: Subagent Autonomous Orchestration
 
-Antigravity automatically delegates tasks across 4 specialized subagents:
-- **`cpp-to-python-architect`** (`Model: "pro"`): Master translation coordinator. Ingests entire directories, coordinates multi-file DAG linking, and oversees architecture.
-- **`numpy-vectorizer`** (`Model: "flash"`): High-performance NumPy array vectorization and Numba specialist.
-- **`memory-de-pointer`** (`Model: "flash"`): Memory de-pointerization and slice-safety specialist.
-- **`oop-modernizer`** (`Model: "flash"`): Struct, class, and data model modernizer.
+Antigravity automatically delegates tasks to the consolidated C/C++ modernization subagent:
+- **`cpp-to-python-architect`** (`Model: "pro"` — `claude-opus-5-5-high` / `claude-sonnet-5-5-high` / `gemini-4-argon-high`): Master translation coordinator. Ingests entire directories, coordinates multi-file DAG linking, eliminates raw pointers, vectorizes loops into NumPy/Numba, and converts structs/classes into Python `@dataclass` models.
 
 #### Method C: Standalone Zero-Token CLI (Offline Execution)
 
@@ -138,10 +135,7 @@ python3 scripts/cpp_bridge_cli.py --self-test
 
 | Subagent | Recommended Model | Primary Role |
 |---|---|---|
-| [`cpp-to-python-architect`](./agents/cpp-to-python-architect.md) | `Model: "pro"` (`claude-opus-4-6-thinking`) | Lead translation architect. Directs codebase decomposition, determines pure Python vs. pybind11 pathways, and coordinates subagents. |
-| [`numpy-vectorizer`](./agents/numpy-vectorizer.md) | `Model: "flash"` (`gemini-3.8-flash-high`) | Scientific Python optimization specialist. Replaces scalar loops with NumPy vector operations, broadcasting, and Numba JIT kernels. |
-| [`memory-de-pointer`](./agents/memory-de-pointer.md) | `Model: "flash"` (`gemini-3.8-flash-high`) | Memory safety specialist. Audits raw pointers, converts heap allocations to NumPy, and eliminates dangling memory hazards. |
-| [`oop-modernizer`](./agents/oop-modernizer.md) | `Model: "flash"` (`gemini-3.8-flash-high`) | Object-oriented modernizer. Converts structs, unions, and classes into Python `@dataclass` models and structured `np.dtype` arrays. |
+| [`cpp-to-python-architect`](./agents/cpp-to-python-architect.md) | `Model: "pro"` (`claude-opus-5-5-high` / `claude-sonnet-5-5-high` / `gemini-4-argon-high`) | Lead translation architect. Directs codebase decomposition, pointer elimination, NumPy/Numba vectorization, `@dataclass` OOP modernization, and pybind11 packaging. |
 
 ---
 

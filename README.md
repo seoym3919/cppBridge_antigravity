@@ -4,9 +4,10 @@
 [![Agent Plugins 1.0.0](https://img.shields.io/badge/Agent%20Plugins-1.0.0%20Compliant-brightgreen.svg)](https://agent-plugins.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**cppBridge** is an Antigravity plugin engineered to **translate and modernize legacy and modern C/C++ (C89, C99, C11, C++11, C++17, C++20) scientific algorithms and systems code into idiomatic, vectorized scientific Python (NumPy, SciPy, Numba, Dataclasses) or accelerated pybind11 C-extensions.**
+**cppBridge** is an Antigravity plugin engineered to **translate and modernize legacy and modern C/C++ codebases, directories, and routines (C89, C99, C11, C++11, C++17, C++20) into idiomatic, vectorized scientific Python (NumPy, SciPy, Numba, Dataclasses) or accelerated pybind11 C-extensions.**
 
-It automates the most complex aspects of C/C++ to Python migration:
+It operates on entire codebase directories by default, automating the most complex aspects of C/C++ to Python migration:
+- **Directory-Wide Include DAG Linking**: Resolves internal `#include` dependencies and generates complete Python packages (`__init__.py`).
 - **Raw Pointer De-Pointerization**: `malloc`, `calloc`, and `new[]` $\to$ `np.zeros` / `np.empty`.
 - **Pointer Arithmetic Decompilation**: `*(ptr + i)` $\to$ `ptr[i]`, `&arr[i]` $\to$ `arr[i:]`.
 - **Struct & Class Modernization**: C `struct` and C++ `class` $\to$ `@dataclass` + contiguous `np.dtype`.
@@ -15,7 +16,6 @@ It automates the most complex aspects of C/C++ to Python migration:
 - **Linear Algebra**: BLAS (`dgemm`, `ddot`, `dnrm2`), LAPACK (`dgesv`), and Eigen (`MatrixXd`, `Vector3d`, `.solve()`) $\to$ `numpy.linalg` / `scipy.linalg`.
 - **Boost C++ Libraries**: `boost::math` special functions $\to$ `scipy.special`, `boost::multi_array` $\to$ `np.ndarray`, `boost::random` $\to$ `np.random`.
 - **Formatted I/O Decompilation**: `printf`, `sprintf`, `fprintf`, and `std::cout` $\to$ Python 3 f-strings.
-- **Multi-File Include Linker**: DAG include dependency analysis, topological sort, and `__init__.py` generation.
 - **Closed-Loop Verification**: Validating equivalence within machine precision ($L_2 < 10^{-12}$).
 
 ---
@@ -50,54 +50,51 @@ agy plugin list
 
 #### Method A: Interactive Slash Commands in Antigravity
 
-In the Antigravity chat, interact directly with C/C++ modernization skills:
+In the Antigravity chat, interact directly with C/C++ modernization skills targeting directories or files:
 
 | Command | Action & Modernization Capability | Example Prompt |
 | :--- | :--- | :--- |
-| **`/convert-cpp-to-python`** | Master migration command: translates C/C++ files to idiomatic scientific Python with full reports. | `/convert-cpp-to-python solver.c -o solver.py` |
-| **`/depointerize`** | Audits raw pointers (`malloc`, `free`, `*ptr`) and converts them to safe NumPy arrays and slices. | `/depointerize buffer_manager.cpp` |
-| **`/vectorize-loops`** | Converts scalar for-loops and mutations into vectorized NumPy expressions or Numba `@njit`. | `/vectorize-loops stencil_kernel.c` |
-| **`/struct-to-dataclass`** | Converts C structs and C++ classes into Python `@dataclass` models and companion `np.dtype`. | `/struct-to-dataclass particle_types.h` |
-| **`/transpile-openmp`** | Maps `#pragma omp parallel for` directly into `@njit(parallel=True)` with `numba.prange`. | `/transpile-openmp monte_carlo.cpp` |
-| **`/decompile-stl`** | Maps STL containers (`vector`, `array`, `map`, `pair`) and algorithms to Python/NumPy. | `/decompile-stl container_logic.cpp` |
-| **`/modernize-linalg`** | Maps BLAS/LAPACK and Eigen matrix routines to `numpy.linalg` and `scipy.linalg`. | `/modernize-linalg linalg_core.cpp` |
-| **`/modernize-boost`** | Maps `boost::math` special functions and `boost::multi_array` to SciPy and NumPy. | `/modernize-boost bessel_solver.cpp` |
-| **`/bind-pybind11`** | Generates zero-copy C++ `pybind11` extension wrappers (`py::array_t`) and `setup.py`. | `/bind-pybind11 heavy_solver.cpp --module-name native_solver` |
+| **`/convert-cpp-to-python`** | **Master codebase-wide command**: translates an entire C/C++ directory or file into a structured Python package with full reports. | `/convert-cpp-to-python [directory] --out-dir modernized_pkg` |
 | **`/link-cpp-project`** | Analyzes `#include` DAGs, computes topological build order, and generates a packaged Python library. | `/link-cpp-project /path/to/cpp_src/` |
-| **`/decompile-printf`** | Converts `printf`, `sprintf`, `fprintf`, and `std::cout` chains into Python 3 f-strings. | `/decompile-printf logger.cpp` |
+| **`/bind-pybind11`** | Generates zero-copy C++ `pybind11` extension wrappers (`py::array_t`) and `setup.py` across codebase. | `/bind-pybind11 src/ --module-name native_solver` |
+| **`/depointerize`** | Audits raw pointers (`malloc`, `free`, `*ptr`) and converts them to safe NumPy arrays and slices. | `/depointerize src/` |
+| **`/vectorize-loops`** | Converts scalar for-loops and mutations into vectorized NumPy expressions or Numba `@njit`. | `/vectorize-loops src/kernels/` |
+| **`/struct-to-dataclass`** | Converts C structs and C++ classes into Python `@dataclass` models and companion `np.dtype`. | `/struct-to-dataclass include/types.h` |
+| **`/transpile-openmp`** | Maps `#pragma omp parallel for` directly into `@njit(parallel=True)` with `numba.prange`. | `/transpile-openmp src/` |
+| **`/decompile-stl`** | Maps STL containers (`vector`, `array`, `map`, `pair`) and algorithms to Python/NumPy. | `/decompile-stl src/` |
+| **`/modernize-linalg`** | Maps BLAS/LAPACK and Eigen matrix routines to `numpy.linalg` and `scipy.linalg`. | `/modernize-linalg src/math/` |
+| **`/modernize-boost`** | Maps `boost::math` special functions and `boost::multi_array` to SciPy and NumPy. | `/modernize-boost src/special_functions/` |
+| **`/decompile-printf`** | Converts `printf`, `sprintf`, `fprintf`, and `std::cout` chains into Python 3 f-strings. | `/decompile-printf src/logger.cpp` |
 | **`/benchmark-cpp-python`** | Measures speedups and benchmarks scalar Python vs. vectorized NumPy vs. Numba JIT. | `/benchmark-cpp-python solver.py` |
 | **`/verify-cpp-python`** | Closed-loop equivalence tester asserting output differences satisfy $L_2, L_\infty < 10^{-12}$. | `/verify-cpp-python solver.c solver.py` |
 
 #### Method B: Subagent Autonomous Orchestration
 
 Antigravity automatically delegates tasks across 4 specialized subagents:
-- **`cpp-to-python-architect`** (`Model: "pro"`): Master translation coordinator and architectural planner.
+- **`cpp-to-python-architect`** (`Model: "pro"`): Master translation coordinator. Ingests entire directories, coordinates multi-file DAG linking, and oversees architecture.
 - **`numpy-vectorizer`** (`Model: "flash"`): High-performance NumPy array vectorization and Numba specialist.
 - **`memory-de-pointer`** (`Model: "flash"`): Memory de-pointerization and slice-safety specialist.
 - **`oop-modernizer`** (`Model: "flash"`): Struct, class, and data model modernizer.
 
 #### Method C: Standalone Zero-Token CLI (Offline Execution)
 
-Modernize code directly in your terminal at zero LLM token cost:
+Modernize codebases directly in your terminal at zero LLM token cost:
 
 ```bash
-# 1. Run full 12-subsystem verification suite
-python3 scripts/cpp_bridge_cli.py --self-test
+# 1. Modernize entire C/C++ codebase directory into structured Python package
+python3 scripts/cpp_bridge_cli.py /path/to/cpp_repo
 
-# 2. Modernize C source into vectorized Python with translation report
+# 2. Modernize entire codebase to native pybind11 extension module with zero-copy NumPy buffers
+python3 scripts/cpp_bridge_cli.py /path/to/cpp_repo --pybind11 --module-name my_native_pkg
+
+# 3. Modernize an individual C/C++ file with modernization report
 python3 scripts/cpp_bridge_cli.py -i examples/nbody_simulation.c -o examples/nbody_simulation.py --report examples/translation_report.md
 
-# 3. Generate native pybind11 extension wrappers with zero-copy NumPy buffers
-python3 scripts/cpp_bridge_cli.py -i examples/nbody_simulation.c --pybind11 --module-name nbody_native
+# 4. Analyze multi-file include DAG and build topological sequence
+python3 scripts/header_linker.py /path/to/cpp_project
 
-# 4. Link an entire multi-file C/C++ project into a structured Python package
-python3 scripts/cpp_bridge_cli.py --link /path/to/cpp_project
-
-# 5. Run performance micro-benchmarks
-python3 scripts/cpp_bridge_cli.py --benchmark
-
-# 6. Verify mathematical output equivalence against reference implementation
-python3 scripts/cpp_python_verifier.py --self-test
+# 5. Run full 12-subsystem verification suite
+python3 scripts/cpp_bridge_cli.py --self-test
 ```
 
 ---

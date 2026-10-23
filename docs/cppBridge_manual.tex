@@ -83,17 +83,17 @@ agy plugin list
 \end{lstlisting}
 
 \subsection{How to Use: Antigravity Slash Commands}
-Within the Antigravity chat interface, users interact directly with modernization workflows:
+Within the Antigravity chat interface, users interact directly with modernization workflows targeting entire directories or individual files:
 \begin{itemize}
-    \item \texttt{/convert-cpp-to-python <file>}: Master modernization entrypoint converting C/C++ files to Python.
-    \item \texttt{/depointerize <file>}: Audits pointers and converts \texttt{malloc/free} and raw dereferences to NumPy arrays and slices.
-    \item \texttt{/vectorize-loops <file>}: Replaces scalar iteration with vectorized NumPy expressions or Numba \texttt{@njit}.
-    \item \texttt{/struct-to-dataclass <file>}: Modernizes structs and classes into Python \texttt{@dataclass} and structured \texttt{np.dtype}.
-    \item \texttt{/transpile-openmp <file>}: Maps \texttt{\#pragma omp parallel for} into Numba \texttt{@njit(parallel=True)} with \texttt{prange}.
-    \item \texttt{/decompile-stl <file>}: Maps \texttt{std::vector}, \texttt{std::map}, and STL algorithms to Python/NumPy equivalents.
-    \item \texttt{/modernize-linalg <file>}: Modernizes BLAS, LAPACK, and Eigen linear algebra into \texttt{numpy.linalg} and \texttt{scipy.linalg}.
-    \item \texttt{/modernize-boost <file>}: Modernizes \texttt{boost::math} and \texttt{boost::multi\_array} to SciPy and NumPy.
-    \item \texttt{/bind-pybind11 <file>}: Generates zero-copy \texttt{pybind11} C++ wrappers with NumPy buffer protocol.
+    \item \texttt{/convert-cpp-to-python [directory]}: \textbf{Master codebase-wide modernization entrypoint}. Recursively scans the directory, builds the \texttt{\#include} DAG, and converts all C/C++ files into a structured Python package (with \texttt{\_\_init\_\_.py}).
+    \item \texttt{/depointerize [directory]}: Audits pointers and converts \texttt{malloc/free} and raw dereferences to NumPy arrays and slices.
+    \item \texttt{/vectorize-loops [directory]}: Replaces scalar iteration with vectorized NumPy expressions or Numba \texttt{@njit}.
+    \item \texttt{/struct-to-dataclass [directory]}: Modernizes structs and classes into Python \texttt{@dataclass} and structured \texttt{np.dtype}.
+    \item \texttt{/transpile-openmp [directory]}: Maps \texttt{\#pragma omp parallel for} into Numba \texttt{@njit(parallel=True)} with \texttt{prange}.
+    \item \texttt{/decompile-stl [directory]}: Maps \texttt{std::vector}, \texttt{std::map}, and STL algorithms to Python/NumPy equivalents.
+    \item \texttt{/modernize-linalg [directory]}: Modernizes BLAS, LAPACK, and Eigen linear algebra into \texttt{numpy.linalg} and \texttt{scipy.linalg}.
+    \item \texttt{/modernize-boost [directory]}: Modernizes \texttt{boost::math} and \texttt{boost::multi\_array} to SciPy and NumPy.
+    \item \texttt{/bind-pybind11 [directory]}: Generates zero-copy \texttt{pybind11} C++ wrappers with NumPy buffer protocol and \texttt{setup.py}.
     \item \texttt{/link-cpp-project <dir>}: Analyzes multi-file \texttt{\#include} DAGs and packages modular Python libraries.
     \item \texttt{/decompile-printf <file>}: Converts \texttt{printf} and \texttt{std::cout} chains into Python 3 f-strings.
     \item \texttt{/verify-cpp-python <file>}: Closed-loop equivalence tester asserting continuous relative $L_2 \le 10^{-12}$.
@@ -102,7 +102,7 @@ Within the Antigravity chat interface, users interact directly with modernizatio
 \subsection{Subagent Delegation Architecture}
 Complex modernization tasks are automatically routed to specialized subagents:
 \begin{itemize}
-    \item \textbf{\texttt{cpp-to-python-architect}} (\texttt{Model: "pro"}): Lead modernization architect and multi-file project planner.
+    \item \textbf{\texttt{cpp-to-python-architect}} (\texttt{Model: "pro"}): Lead modernization architect. Manages codebase traversal, multi-file include DAG linking, and package generation.
     \item \textbf{\texttt{numpy-vectorizer}} (\texttt{Model: "flash"}): High-performance NumPy array vectorization and Numba specialist.
     \item \textbf{\texttt{memory-de-pointer}} (\texttt{Model: "flash"}): Pointer de-referencing and slice safety specialist.
     \item \textbf{\texttt{oop-modernizer}} (\texttt{Model: "flash"}): Struct, union, and class modernization engineer.
@@ -111,22 +111,20 @@ Complex modernization tasks are automatically routed to specialized subagents:
 \subsection{How to Use: Standalone Command-Line Execution}
 For offline environments or zero-token local processing, all engines run via direct CLI commands:
 \begin{lstlisting}[language=bash]
-# Run full 12-subsystem verification suite
-python3 scripts/cpp_bridge_cli.py --self-test
+# 1. Modernize entire C/C++ codebase directory into structured Python package
+python3 scripts/cpp_bridge_cli.py /path/to/cpp_repo
 
-# Modernize C code to Python with full modernization report
+# 2. Modernize entire codebase to native pybind11 extension module
+python3 scripts/cpp_bridge_cli.py /path/to/cpp_repo --pybind11 --module-name my_native_pkg
+
+# 3. Modernize an individual C/C++ file with modernization report
 python3 scripts/cpp_bridge_cli.py -i simulation.c -o simulation.py --report report.md
 
-# Generate pybind11 native wrapper and setup.py
-python3 scripts/cpp_bridge_cli.py -i simulation.c --pybind11 --module-name sim_native
+# 4. Run full 12-subsystem verification suite
+python3 scripts/cpp_bridge_cli.py --self-test
 
-# Link an entire multi-file C/C++ project into a structured Python package
-python3 scripts/cpp_bridge_cli.py --link /path/to/cpp_project
-
-# Run performance micro-benchmarks
+# 5. Run performance micro-benchmarks and closed-loop numerical verifier
 python3 scripts/cpp_bridge_cli.py --benchmark
-
-# Run closed-loop numerical verifier
 python3 scripts/cpp_python_verifier.py --self-test
 \end{lstlisting}
 

@@ -1,38 +1,38 @@
 ---
 name: convert-cpp-to-python
-description: Master translation command to convert legacy and modern C/C++ files or code routines into idiomatic scientific Python with NumPy, SciPy, and Dataclasses.
+description: Master translation command to convert legacy and modern C/C++ codebases, directories, or files into idiomatic scientific Python with NumPy, SciPy, and Dataclasses.
 ---
 
 # /convert-cpp-to-python
 
-Translates entire C or C++ source files or functions into modern, typed Python using NumPy arrays, Python dataclasses, and vectorized expressions.
+Translates entire C/C++ codebase directories, repositories, or individual source files into modern, typed Python using NumPy arrays, Python dataclasses, and vectorized expressions or native pybind11 C-extensions.
 
 ## Usage
 
-Translate a single C/C++ file:
+Modernize an entire C/C++ codebase directory to a Python package:
 ```text
-/convert-cpp-to-python solver.c --out solver.py
+/convert-cpp-to-python [directory] --out-dir modernized_pkg
 ```
 
-Translate with an architectural modernization report:
+Modernize an entire C/C++ codebase directory to pybind11 native extensions:
 ```text
-/convert-cpp-to-python simulation.cpp --out simulation.py --report report.md
+/convert-cpp-to-python [directory] --pybind11 --module-name my_native_pkg
 ```
 
-Translate via CLI:
-```bash
-python3 scripts/cpp_bridge_cli.py -i simulation.c -o simulation.py --report translation_report.md
+Translate an individual C/C++ file:
+```text
+/convert-cpp-to-python solver.c --out solver.py --report report.md
 ```
 
-## Workflow
+## Codebase Workflow
 
-1. **AST & Interface Deconstruction**:
-   Identifies functions, parameters, pointer indicators, and structs.
-2. **De-Pointerization**:
-   Replaces `malloc`, `calloc`, and `new[]` with `np.zeros` or `np.empty` via [`pointer_analyzer.py`](../../scripts/pointer_analyzer.py).
-3. **Compound Type Modernization**:
-   Transforms C `struct` / `typedef struct` into Python `@dataclass` and `np.dtype` via [`struct_transpiler.py`](../../scripts/struct_transpiler.py).
-4. **Format & Stream Decompilation**:
-   Converts `printf`, `sprintf`, `fprintf`, and `std::cout` into clean Python f-strings via [`printf_decompiler.py`](../../scripts/printf_decompiler.py).
-5. **Code Emission & Verification**:
-   Outputs PEP 8 compliant, typed Python 3.10+ code and verifies numerical equivalence via [`cpp_python_verifier.py`](../../scripts/cpp_python_verifier.py).
+1. **Directory-Wide Ingestion & Header Linker**:
+   Recursively discovers all `.c`, `.cpp`, `.cc`, `.h`, and `.hpp` files across the codebase directory.
+2. **Multi-File Topological Dependency DAG**:
+   Builds the `#include` Directed Acyclic Graph via `scripts/header_linker.py`, ensuring header structures and core types are transpiled before numerical kernels and solvers.
+3. **Automated De-Pointerization & Memory Architecture**:
+   Replaces `malloc`, `calloc`, and `new[]` with contiguous `np.zeros` or `np.empty` buffers via `scripts/pointer_analyzer.py`.
+4. **Compound Type Modernization**:
+   Transforms C `struct` and C++ `class` models into Python `@dataclass` classes and companion `np.dtype` definitions.
+5. **Package Generation & Verification**:
+   Generates a structured Python package with `__init__.py` and emits `CODEBASE_TRANSLATION_REPORT.md`. Verifies numerical equivalence via `scripts/cpp_python_verifier.py`.

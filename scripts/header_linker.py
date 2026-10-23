@@ -25,9 +25,16 @@ class CppProjectLinker:
         self.system_includes: Dict[str, Set[str]] = {}
 
     def scan(self):
-        r"""Scan directory for C/C++ source and header files."""
+        r"""Recursively scan directory for C/C++ source and header files."""
+        ignored_dirs = {".git", ".svn", "__pycache__", ".pytest_cache", "build", "dist", ".venv", "venv", "node_modules"}
+        self.files.clear()
+        self.dependencies.clear()
+        self.system_includes.clear()
+
         for ext in ("*.h", "*.hpp", "*.c", "*.cpp", "*.cc", "*.cxx"):
-            for p in self.project_dir.glob(ext):
+            for p in self.project_dir.rglob(ext):
+                if any(part in ignored_dirs or part.startswith('.') for part in p.parts):
+                    continue
                 self.files[p.name] = p
                 self.dependencies[p.name] = set()
                 self.system_includes[p.name] = set()

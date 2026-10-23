@@ -7,6 +7,7 @@
    - Struct & class modernizer (Dataclasses, OOP): `invoke_subagent` (`TypeName`: `"oop-modernizer"`, `Model`: `"flash"`).
 
 2. **Translation & Porting Standards**:
+   - **Directory-First & Codebase-Wide Scope**: `cppBridge` operates on directories and whole codebases by default. It recursively discovers all C/C++ source and header files, constructs the internal `#include` dependency DAG, topologically sorts translation order, and emits fully structured Python packages (with `__init__.py`) or native pybind11 C-extensions (with `setup.py`).
    - **Pointer Elimination**: Convert raw pointers (`T*`, `malloc`, `new[]`) into NumPy arrays (`np.ndarray`) and slices. Never keep raw address manipulation or integer pointer casts in Python.
    - **Dataclass Encapsulation**: Map C `struct` and `typedef struct` directly into Python `@dataclass` models and companion NumPy `np.dtype` structured arrays.
    - **Loop Vectorization**: Replace scalar array element loops with single-instruction NumPy vector expressions (`a * b + c`). For complex recurrences that cannot be vectorized, use Numba `@njit`.

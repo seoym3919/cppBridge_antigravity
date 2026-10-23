@@ -1,5 +1,7 @@
 # ============================================================================
 # Transpiled from C/C++ to Modern Python / NumPy by cppBridge
+# Scaffold: review every `raise NotImplementedError` (constructs that were not
+# translated) and verify numerically against the C/C++ reference before use.
 # ============================================================================
 from __future__ import annotations
 from dataclasses import dataclass, field
@@ -37,7 +39,6 @@ def compute_gravitational_forces(pos: np.ndarray, mass: np.ndarray, acc: np.ndar
         ax = 0.0
         ay = 0.0
         az = 0.0
-
         for j in range(int(n)):
             if i != j:
                 dx = pos[j * 3] - pos[i * 3]
@@ -47,31 +48,25 @@ def compute_gravitational_forces(pos: np.ndarray, mass: np.ndarray, acc: np.ndar
                 dist = math.sqrt(dist_sq)
                 inv_dist3 = 1.0 / (dist * dist * dist)
                 f = mass[j] * inv_dist3
-
                 ax += f * dx
                 ay += f * dy
                 az += f * dz
-
         acc[i * 3] = ax
         acc[i * 3 + 1] = ay
         acc[i * 3 + 2] = az
 
+
 def leapfrog_integrate(pos: np.ndarray, vel: np.ndarray, mass: np.ndarray, n: int, dt: float, steps: int, softening: float):
     r"""Converted from C/C++ leapfrog_integrate."""
     acc = np.zeros(n * 3, dtype=np.float64)
-
     for step in range(int(steps)):
         compute_gravitational_forces(pos, mass, acc, n, softening)
-
         for i in range(int(n)):
             vel[i * 3] += acc[i * 3] * dt
             vel[i * 3 + 1] += acc[i * 3 + 1] * dt
             vel[i * 3 + 2] += acc[i * 3 + 2] * dt
-
             pos[i * 3] += vel[i * 3] * dt
             pos[i * 3 + 1] += vel[i * 3 + 1] * dt
             pos[i * 3 + 2] += vel[i * 3 + 2] * dt
-
         if step % 10 == 0:
             print(f"Step {step:4d} complete. Primary body pos: [{pos[0]:8.4f}, {pos[1]:8.4f}, {pos[2]:8.4f}]")
-

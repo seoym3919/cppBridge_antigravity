@@ -21,7 +21,9 @@ Usage:
 
 from __future__ import annotations
 import argparse
+import ast
 import os
+import re
 import sys
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Tuple
@@ -183,6 +185,28 @@ def generate_single_file_report(source_path: str, c_text: str, py_text: str) -> 
     return "\n".join(lines)
 
 
+def check_translation(py_code: str) -> Dict[str, Any]:
+    r"""Sanity-check generated Python: it must parse. Also counts constructs that were refused
+    (emitted as `raise NotImplementedError('cppBridge: ...')`) instead of being guessed at."""
+    untranslated = len(re.findall(r"NotImplementedError\('cppBridge", py_code))
+    try:
+        ast.parse(py_code)
+        return {"error": None, "untranslated": untranslated}
+    except SyntaxError as exc:
+        return {"error": f"line {exc.lineno}: {exc.msg}", "untranslated": untranslated}
+
+
+def report_check(name: str, result: Dict[str, Any]) -> int:
+    r"""Print the outcome of check_translation; returns 1 if the output is syntactically invalid."""
+    if result["error"]:
+        print(f"WARNING: generated Python for {name} is not valid: {result['error']}", file=sys.stderr)
+        return 1
+    if result["untranslated"]:
+        print(f"NOTE: {name}: {result['untranslated']} construct(s) were not translated and fail loudly at "
+              f"runtime (search for 'cppBridge:' in the output).", file=sys.stderr)
+    return 0
+
+
 def modernize_cpp_codebase(
     target_dir: str | Path,
     out_dir: Optional[str | Path] = None,
@@ -224,6 +248,7 @@ def modernize_cpp_codebase(
     all_allocs: List[Dict[str, Any]] = []
     total_c_lines = 0
     total_py_lines = 0
+    invalid = 0
 
     if use_pybind11:
         pkg_name = module_name or f"{root.name}_native"
@@ -266,6 +291,7 @@ def modernize_cpp_codebase(
             stem = src_path.stem
             out_py = destination / f"{stem}.py"
             out_py.write_text(py_code, encoding="utf-8")
+            invalid += report_check(out_py.name, check_translation(py_code))
 
         # Generate __init__.py
         init_code = linker.generate_init_py(compile_order)
@@ -338,7 +364,8 @@ def modernize_cpp_codebase(
     return {
         "files": len(linker.files),
         "destination": destination,
-        "report": rep_out
+        "report": rep_out,
+        "invalid_outputs": invalid,
     }
 
 
@@ -378,14 +405,14 @@ def main():
 
     # DIRECTORY / CODEBASE MODE (PRIMARY MODE)
     if target_path.is_dir():
-        modernize_cpp_codebase(
+        summary = modernize_cpp_codebase(
             target_path,
             out_dir=args.out_dir,
             report_path=args.report,
             use_pybind11=args.pybind11,
             module_name=args.module_name
         )
-        return
+        sys.exit(3 if summary.get("invalid_outputs") else 0)
 
     # SINGLE FILE MODE (FALLBACK)
     c_text = target_path.read_text(encoding="utf-8", errors="replace")
@@ -410,6 +437,7 @@ def main():
     # Standard pure Python transpilation
     print(f"Transpiling {target_path.name} to Python / NumPy...")
     py_code = transpile_cpp_to_python(c_text)
+    check = check_translation(py_code)
 
     if args.output:
         out_path = Path(args.output)
@@ -417,11 +445,14 @@ def main():
         print(f"Transpiled Python saved to: {out_path}")
     else:
         print("\n" + py_code)
+    invalid = report_check(target_path.name, check)
 
     if args.report:
         report_md = generate_single_file_report(str(target_path), c_text, py_code)
         Path(args.report).write_text(report_md, encoding="utf-8")
         print(f"Modernization report saved to: {args.report}")
+
+    sys.exit(3 if invalid else 0)
 
 
 if __name__ == "__main__":

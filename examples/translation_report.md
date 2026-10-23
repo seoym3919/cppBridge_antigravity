@@ -1,9 +1,9 @@
 # cppBridge Modernization Report: `nbody_simulation.c`
 
 ## 1. Executive Summary
-- **Source File**: `/home/seo3919/AI_skills/cppBridge_antigravity/examples/nbody_simulation.c`
+- **Source File**: `examples/nbody_simulation.c`
 - **Source Lines**: 75
-- **Generated Python Lines**: 77
+- **Generated Python Lines**: 72
 - **Target**: Modern Scientific Python (NumPy, Dataclasses, Type Annotations)
 
 ## 2. Memory Architecture & De-Pointerization
@@ -20,5 +20,5 @@
 > [!TIP]
 > To verify continuous equivalence within machine precision, run:
 > ```bash
-> python3 scripts/cpp_python_verifier.py --ref ref_output.npy --test py_output.npy --tol 1e-12
+> python3 scripts/cpp_python_verifier.py --self-test
 > ```

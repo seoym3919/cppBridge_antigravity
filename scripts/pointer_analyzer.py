@@ -100,14 +100,15 @@ def decompile_pointer_arithmetic(expr: str) -> str:
     - *ptr (unary dereference) -> ptr[0]
     """
     e = expr.strip()
-    # Dereference with addition: *(ptr + i) -> ptr[i]
-    e = re.sub(r'\*\s*\(\s*([A-Za-z0-9_]+)\s*\+\s*([^)]+)\)', r'\1[\2]', e)
+    # Dereference with addition: *(ptr + i) -> ptr[i]. Only a *unary* '*': a multiplication such as
+    # `a[j] * (i + 1)` has an operand before the '*' and must be left alone.
+    e = re.sub(r'(^|[(=,+\-/<>;{:!&|?%*])\s*\*\s*\(\s*([A-Za-z0-9_]+)\s*\+\s*([^)]+)\)', r'\1 \2[\3]', e).strip()
     # Address-of slice: &arr[i] -> arr[i:]
     e = re.sub(r'&\s*([A-Za-z0-9_]+)\s*\[\s*([^\]]+)\s*\]', r'\1[\2:]', e)
     # Unary dereference: *ptr -> ptr[0] (only when preceded by operator or start of line, not word or ])
     deref_pat = r'(^|[(=,+\-/<>;{:!])\s*\*\s*([A-Za-z_][A-Za-z0-9_]*)'
     e = re.sub(deref_pat, r'\1 \2[0]', e)
-    return e
+    return e.strip()
 
 
 if __name__ == "__main__":

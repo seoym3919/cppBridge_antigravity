@@ -33,7 +33,8 @@ Translate an individual C/C++ file:
    Builds the `#include` Directed Acyclic Graph via `scripts/header_linker.py`, ensuring header structures and core types are transpiled before numerical kernels and solvers.
 3. **Automated De-Pointerization & Memory Architecture**:
    Replaces `malloc`, `calloc`, and `new[]` with contiguous `np.zeros` or `np.empty` buffers via `scripts/pointer_analyzer.py`.
-4. **Compound Type Modernization**:
-   Transforms C `struct` and C++ `class` models into Python `@dataclass` classes and companion `np.dtype` definitions.
-5. **Package Generation & Verification**:
-   Generates a structured Python package with `__init__.py` and emits `CODEBASE_TRANSLATION_REPORT.md`. Verifies numerical equivalence via `scripts/cpp_python_verifier.py`.
+4. **Hybrid Static + Semantic LLM Code Synthesis**:
+   - Run `scripts/cpp_bridge_cli.py` to generate the topological Python package scaffold (`__init__.py`) or `pybind11` module (`bindings.cpp` + `setup.py`), `@dataclass` / `np.dtype` models, and pointer hazard reports.
+   - Refine complex mathematical kernels semantically (via `cpp-to-python-architect` on Opus 5.5 / Sonnet 5.5 / Gemini 4) rather than relying solely on regex line-by-line transpilation, replacing scalar loops with vectorized NumPy/SciPy or `@njit(parallel=True)` (`prange`) kernels.
+5. **Package Generation & Closed-Loop Verification**:
+   Emit `CODEBASE_TRANSLATION_REPORT.md` and verify $L_2 < 10^{-12}$ numerical equivalence against the C/C++ reference via `scripts/cpp_python_verifier.py`.

@@ -23,5 +23,12 @@
     "boost-math",
     "scientific-computing",
     "code-translation"
+  ],
+  "displayName": "cppBridge",
+  "logo": "assets/logo.svg",
+  "suggestedPrompts": [
+    "/convert-cpp-to-python ./src --out-dir modernized_pkg",
+    "/bind-pybind11 ./src --module-name native_solver",
+    "/verify-cpp-python Verify L2 < 1e-12 numerical equivalence"
   ]
 }

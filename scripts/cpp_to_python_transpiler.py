@@ -20,6 +20,11 @@ from typing import List, Dict, Any, Set, Tuple
 from struct_transpiler import parse_structs_and_classes, ParsedStruct
 from printf_decompiler import decompile_printf_call, decompile_cout_stream
 from pointer_analyzer import analyze_pointer_allocations, decompile_pointer_arithmetic
+from stl_decompiler import decompile_stl_methods, decompile_stl_types
+from linalg_modernizer import modernize_linalg_expressions
+from boost_modernizer import modernize_boost_code
+from openmp_transpiler import decompile_openmp_pragmas
+from loop_vectorizer_engine import analyze_and_vectorize_loop
 
 
 def convert_cpp_expression_to_python(expr: str) -> Tuple[str, Set[str]]:
@@ -28,6 +33,17 @@ def convert_cpp_expression_to_python(expr: str) -> Tuple[str, Set[str]]:
     """
     imports = set()
     e = expr.strip()
+
+    # STL methods (push_back, size, empty, front, back, etc.)
+    e = decompile_stl_methods(e)
+
+    # BLAS / LAPACK / Eigen expressions
+    e, linalg_imps = modernize_linalg_expressions(e)
+    imports.update(linalg_imps)
+
+    # Boost functions & objects
+    e, boost_imps = modernize_boost_code(e)
+    imports.update(boost_imps)
 
     # Arrow operator: obj->field -> obj.field
     e = re.sub(r'->', '.', e)
@@ -71,6 +87,11 @@ def transpile_cpp_to_python(code_text: str) -> str:
     r"""Transpile complete C/C++ source into idiomatic Python."""
     imports = {"numpy as np", "math"}
     python_lines: List[str] = []
+
+    # 0. Preprocess OpenMP pragmas and STL container types
+    code_text, omp_imps = decompile_openmp_pragmas(code_text)
+    imports.update(omp_imps)
+    code_text = decompile_stl_types(code_text)
 
     # 1. Parse and emit structs as dataclasses
     structs = parse_structs_and_classes(code_text)

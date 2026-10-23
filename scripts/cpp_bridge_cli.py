@@ -19,16 +19,23 @@ from pointer_analyzer import analyze_pointer_allocations
 from printf_decompiler import decompile_printf_call, decompile_cout_stream
 from pybind11_generator import generate_pybind11_module, generate_setup_py
 import cpp_python_verifier
+import openmp_transpiler
+import stl_decompiler
+import linalg_modernizer
+import boost_modernizer
+import header_linker
+import loop_vectorizer_engine
+import cpp_python_benchmarker
 
 
 def run_full_self_test() -> bool:
-    r"""Run test suite across all cppBridge components."""
+    r"""Run test suite across all 12 cppBridge subsystems."""
     print("======================================================================")
-    print("cppBridge Full Self-Test Suite")
+    print("cppBridge Full Self-Test Suite (12 Subsystems)")
     print("======================================================================\n")
 
     # 1. Struct transpiler test
-    print("[1/5] Testing Struct & Dataclass Transpiler...")
+    print("[1/12] Testing Struct & Dataclass Transpiler...")
     c_struct = """
     typedef struct {
         double x, y, z;
@@ -43,7 +50,7 @@ def run_full_self_test() -> bool:
     print("  -> Passed!")
 
     # 2. Pointer analyzer test
-    print("[2/5] Testing Pointer & Memory Analyzer...")
+    print("[2/12] Testing Pointer & Memory Analyzer...")
     c_mem = "double* data = (double*)malloc(n * sizeof(double));"
     allocs = analyze_pointer_allocations(c_mem)
     assert len(allocs) == 1, "Pointer allocation detection failed"
@@ -51,14 +58,49 @@ def run_full_self_test() -> bool:
     print("  -> Passed!")
 
     # 3. Printf decompiler test
-    print("[3/5] Testing Printf & Cout Decompiler...")
+    print("[3/12] Testing Printf & Cout Decompiler...")
     p_stmt = 'printf("Energy: %12.6f, Iter: %04d\\n", e, iter);'
     py_p = decompile_printf_call(p_stmt)
     assert "print(f\"Energy: {e:12.6f}, Iter: {iter:04d}\")" in py_p, f"Printf decompilation mismatch: {py_p}"
     print("  -> Passed!")
 
-    # 4. C++ Transpiler test
-    print("[4/5] Testing Master C/C++ Transpiler...")
+    # 4. OpenMP transpiler test
+    print("[4/12] Testing OpenMP Pragmas to Numba prange...")
+    openmp_transpiler.run_self_test()
+    print("  -> Passed!")
+
+    # 5. C++ STL container decompiler
+    print("[5/12] Testing C++ STL Container & Method Decompiler...")
+    stl_decompiler.run_self_test()
+    print("  -> Passed!")
+
+    # 6. BLAS/LAPACK & Eigen linear algebra modernizer
+    print("[6/12] Testing Linear Algebra Modernizer (BLAS/LAPACK & Eigen)...")
+    linalg_modernizer.run_self_test()
+    print("  -> Passed!")
+
+    # 7. Boost C++ modernizer
+    print("[7/12] Testing Boost C++ Library Modernizer...")
+    boost_modernizer.run_self_test()
+    print("  -> Passed!")
+
+    # 8. Multi-file header dependency linker
+    print("[8/12] Testing Multi-File Header Dependency Linker...")
+    header_linker.run_self_test()
+    print("  -> Passed!")
+
+    # 9. Automated loop vectorizer engine
+    print("[9/12] Testing Loop Vectorization Engine...")
+    loop_vectorizer_engine.run_self_test()
+    print("  -> Passed!")
+
+    # 10. Performance benchmarker
+    print("[10/12] Testing Performance Benchmarker...")
+    cpp_python_benchmarker.run_self_test()
+    print("  -> Passed!")
+
+    # 11. Master C/C++ Transpiler test
+    print("[11/12] Testing Master C/C++ Transpiler...")
     c_code = """
     void saxpy(int n, double a, double* x, double* y) {
         for (int i = 0; i < n; ++i) {
@@ -71,13 +113,13 @@ def run_full_self_test() -> bool:
     assert "for i in range(int(n)):" in py_code, "Loop transpilation failed"
     print("  -> Passed!")
 
-    # 5. Closed-loop verifier self-test
-    print("[5/5] Testing Closed-Loop Verifier...")
+    # 12. Closed-loop verifier self-test
+    print("[12/12] Testing Closed-Loop Verifier...")
     cpp_python_verifier.run_self_test()
     print("  -> Passed!")
 
     print("\n======================================================================")
-    print("All cppBridge Subsystems Successfully Verified!")
+    print("All 12 cppBridge Subsystems Successfully Verified!")
     print("======================================================================")
     return True
 
@@ -137,13 +179,38 @@ def main():
     parser.add_argument("--pybind11", action="store_true", help="Generate high-performance pybind11 C++ bindings and setup.py")
     parser.add_argument("--module-name", type=str, help="Module name for pybind11 (defaults to input file stem)")
     parser.add_argument("--report", type=str, help="Path to output markdown modernization report")
-    parser.add_argument("--self-test", action="store_true", help="Run full self-test test suite")
+    parser.add_argument("--link", type=str, help="Path to C/C++ project directory to analyze DAG and build Python package")
+    parser.add_argument("--benchmark", action="store_true", help="Run performance benchmark suite")
+    parser.add_argument("--self-test", action="store_true", help="Run full 12-subsystem test suite")
 
     args = parser.parse_args()
 
     if args.self_test:
         success = run_full_self_test()
         sys.exit(0 if success else 1)
+
+    if args.benchmark:
+        res = cpp_python_benchmarker.run_benchmark_suite()
+        tbl = cpp_python_benchmarker.format_benchmark_table(res)
+        print(tbl)
+        return
+
+    if args.link:
+        proj_dir = Path(args.link)
+        if not proj_dir.is_dir():
+            print(f"Error: Directory '{args.link}' not found.", file=sys.stderr)
+            sys.exit(1)
+        linker = header_linker.CppProjectLinker(proj_dir)
+        linker.scan()
+        order = linker.topological_sort()
+        print(f"Discovered {len(linker.files)} C/C++ files. Topological compilation order:")
+        for idx, f in enumerate(order, 1):
+            print(f"  {idx}. {f}")
+        init_code = linker.generate_init_py(order)
+        init_path = proj_dir / "__init__.py"
+        init_path.write_text(init_code, encoding="utf-8")
+        print(f"Generated Python package descriptor: {init_path}")
+        return
 
     if not args.input:
         parser.print_help()
@@ -158,7 +225,6 @@ def main():
     mod_name = args.module_name or input_path.stem
 
     if args.pybind11:
-        # Generate pybind11 bindings
         print(f"Generating pybind11 bindings for {input_path.name}...")
         cpp_wrapper = generate_pybind11_module(c_text, mod_name)
         setup_code = generate_setup_py(mod_name, f"{mod_name}_pybind11.cpp")

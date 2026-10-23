@@ -1,25 +1,22 @@
 # cppBridge: C/C++ to Scientific Python Modernization Engine
 
-[![Antigravity Plugin](https://img.shields.io/badge/Antigravity-Plugin%20v0.1.0-blue.svg)](https://github.com/seoym3919/cppBridge_antigravity)
+[![Antigravity Plugin](https://img.shields.io/badge/Antigravity-Plugin%20v0.2.0-blue.svg)](https://github.com/seoym3919/cppBridge_antigravity)
 [![Agent Plugins 1.0.0](https://img.shields.io/badge/Agent%20Plugins-1.0.0%20Compliant-brightgreen.svg)](https://agent-plugins.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **cppBridge** is an Antigravity plugin engineered to **translate and modernize legacy and modern C/C++ (C89, C99, C11, C++11, C++17, C++20) scientific algorithms and systems code into idiomatic, vectorized scientific Python (NumPy, SciPy, Numba, Dataclasses) or accelerated pybind11 C-extensions.**
 
-It automates the most tedious and error-prone aspects of C/C++ to Python migration: **raw pointer de-pointerization (`malloc`, `calloc`, `new[]` -> NumPy arrays), pointer arithmetic deconstruction (`*(ptr + i)` -> `ptr[i]`, `&arr[i]` -> `arr[i:]`), struct and class encapsulation into Python `@dataclass` models and contiguous `np.dtype` structured arrays, formatted I/O decompilation (`printf`, `std::cout` -> Python 3 f-strings), and closed-loop floating-point equivalence verification ($L_2 < 10^{-12}$).**
-
----
-
-## The Challenge of C/C++ Modernization
-
-Scientific computing, orbital dynamics, numerical linear algebra, and computational physics contain millions of lines of legacy C and C++ code. Porting this code manually to Python introduces subtle bugs:
-- **Pointer Arithmetic & Buffer Overflows**: C code relies heavily on raw pointers (`double* pos`), pointer increments (`ptr++`), and manual memory buffers (`malloc`/`free`). In Python, these must map cleanly to bounded NumPy arrays and zero-copy views.
-- **Output Parameters via Pointers**: C functions frequently return multiple results through pointer arguments (`void solve(double in, double* out1, double* out2)`). In Python, these should be idiomatic return tuples.
-- **Scalar Iteration Overhead**: Translating C `for` loops directly to Python `for` loops results in a 50x-200x slowdown. Loops must be vectorized with NumPy or compiled via Numba/pybind11.
-- **Complex Structs & Objects**: C `typedef struct` and C++ `class` definitions need clean representation as modern `@dataclass` objects and companion NumPy dtypes for array-of-structures operations.
-- **I/O Formatting Rot**: Decades of `printf` and `std::cout` stream expressions must be converted into clean, maintainable Python f-strings.
-
-**cppBridge automates and solves each of these challenges.**
+It automates the most complex aspects of C/C++ to Python migration:
+- **Raw Pointer De-Pointerization**: `malloc`, `calloc`, and `new[]` $\to$ `np.zeros` / `np.empty`.
+- **Pointer Arithmetic Decompilation**: `*(ptr + i)` $\to$ `ptr[i]`, `&arr[i]` $\to$ `arr[i:]`.
+- **Struct & Class Modernization**: C `struct` and C++ `class` $\to$ `@dataclass` + contiguous `np.dtype`.
+- **OpenMP Multithreading**: `#pragma omp parallel for` $\to$ `@njit(parallel=True)` + `numba.prange`.
+- **C++ STL Containers**: `std::vector`, `std::array`, `std::map`, `std::pair` $\to$ NumPy / Python native types.
+- **Linear Algebra**: BLAS (`dgemm`, `ddot`, `dnrm2`), LAPACK (`dgesv`), and Eigen (`MatrixXd`, `Vector3d`, `.solve()`) $\to$ `numpy.linalg` / `scipy.linalg`.
+- **Boost C++ Libraries**: `boost::math` special functions $\to$ `scipy.special`, `boost::multi_array` $\to$ `np.ndarray`, `boost::random` $\to$ `np.random`.
+- **Formatted I/O Decompilation**: `printf`, `sprintf`, `fprintf`, and `std::cout` $\to$ Python 3 f-strings.
+- **Multi-File Include Linker**: DAG include dependency analysis, topological sort, and `__init__.py` generation.
+- **Closed-Loop Verification**: Validating equivalence within machine precision ($L_2 < 10^{-12}$).
 
 ---
 
@@ -35,9 +32,21 @@ Scientific computing, orbital dynamics, numerical linear algebra, and computatio
               │
               ├──► [struct_transpiler]        ──► struct / class -> @dataclass & np.dtype
               │
-              ├──► [printf_decompiler]        ──► printf / cout -> Python 3 f-Strings
+              ├──► [openmp_transpiler]        ──► #pragma omp -> @njit(parallel=True) + prange
+              │
+              ├──► [stl_decompiler]           ──► std::vector/map/pair -> NumPy / dict / tuple
+              │
+              ├──► [linalg_modernizer]        ──► BLAS / LAPACK / Eigen -> numpy.linalg
+              │
+              ├──► [boost_modernizer]         ──► boost::math/multi_array -> scipy.special
+              │
+              ├──► [loop_vectorizer_engine]   ──► Scalar loops -> Vectorized NumPy / Numba
+              │
+              ├──► [header_linker]            ──► #include DAG Linker & Python Package Generator
               │
               ├──► [pybind11_generator]       ──► Native C++ Pybind11 Zero-Copy NumPy Wrappers
+              │
+              ├──► [cpp_python_benchmarker]   ──► Scalar vs. NumPy vs. Numba Performance Profiler
               │
               ├──► [cpp_python_verifier]      ──► Closed-Loop Equivalence: L_2, L_inf < 1e-12
               │
@@ -57,65 +66,41 @@ Scientific computing, orbital dynamics, numerical linear algebra, and computatio
 
 ---
 
-## Skills & Slash Commands
+## Skills & Slash Commands (13 Skills)
 
-### 1. Master Translation: `/convert-cpp-to-python`
-Translates an entire C/C++ source file or routine into modern, typed Scientific Python:
-```bash
-/convert-cpp-to-python solver.c --out solver.py --report report.md
-```
-
-### 2. De-Pointerization: `/depointerize`
-Audits pointer allocations, dereferences, and slice views:
-```bash
-/depointerize memory_kernel.c
-```
-
-### 3. Loop Vectorization: `/vectorize-loops`
-Eliminates scalar iteration and maps element-wise mutations to NumPy / Numba:
-```bash
-/vectorize-loops loop_kernel.cpp
-```
-
-### 4. Struct & Dataclass Modernization: `/struct-to-dataclass`
-Converts C `struct`, `typedef struct`, and C++ `class` to Python `@dataclass` and `np.dtype`:
-```bash
-/struct-to-dataclass types.h
-```
-
-### 5. Format Decompiler: `/decompile-printf`
-Converts `printf`, `sprintf`, `fprintf`, and `std::cout` to Python f-strings:
-```bash
-/decompile-printf format_strings.c
-```
-
-### 6. Turnkey pybind11 Generator: `/bind-pybind11`
-Generates zero-copy NumPy array wrappers (`py::array_t`) and `setup.py` for compiled execution speed:
-```bash
-/bind-pybind11 solver.h --module-name solver_native
-```
-
-### 7. Closed-Loop Numerical Verifier: `/verify-cpp-python`
-Asserts continuous numerical output equivalence within machine precision:
-```bash
-/verify-cpp-python --ref ref_c_output.npy --test py_output.npy --tol 1e-12
-```
+1. **`/convert-cpp-to-python`**: Master translation command for C/C++ files.
+2. **`/depointerize`**: Audits pointer allocations, dereferences, and slice views.
+3. **`/vectorize-loops`**: Eliminates scalar loops and maps element-wise mutations to NumPy / Numba.
+4. **`/struct-to-dataclass`**: Converts structs and classes into Python `@dataclass` and `np.dtype`.
+5. **`/transpile-openmp`**: Converts `#pragma omp parallel for` into Numba `prange`.
+6. **`/decompile-stl`**: Maps `std::vector`, `std::map`, and STL algorithms to Python / NumPy.
+7. **`/modernize-linalg`**: Maps BLAS/LAPACK and Eigen to `numpy.linalg` and `scipy.linalg`.
+8. **`/modernize-boost`**: Maps `boost::math`, `boost::multi_array`, and `boost::random` to SciPy / NumPy.
+9. **`/link-cpp-project`**: Analyzes multi-file include DAGs and generates Python packages.
+10. **`/decompile-printf`**: Converts `printf`, `sprintf`, `fprintf`, and `std::cout` to f-strings.
+11. **`/bind-pybind11`**: Generates zero-copy `pybind11` C++ wrappers and `setup.py`.
+12. **`/benchmark-cpp-python`**: Measures speedups across scalar Python, NumPy, and Numba JIT.
+13. **`/verify-cpp-python`**: Asserts continuous numerical output equivalence ($L_2 < 10^{-12}$).
 
 ---
 
 ## CLI Usage
 
-The plugin provides a standalone, zero-dependency CLI driver:
-
 ```bash
-# Run full self-test suite across all subsystems
+# Run full 12-subsystem test suite
 python3 scripts/cpp_bridge_cli.py --self-test
 
-# Transpile C code to Python with full report
+# Transpile C code to Python with full modernization report
 python3 scripts/cpp_bridge_cli.py -i examples/nbody_simulation.c -o examples/nbody_simulation.py --report examples/translation_report.md
 
 # Generate pybind11 native wrapper and setup.py
 python3 scripts/cpp_bridge_cli.py -i examples/nbody_simulation.c --pybind11 --module-name nbody_native
+
+# Link a multi-file C/C++ project into a Python package
+python3 scripts/cpp_bridge_cli.py --link /path/to/cpp_project
+
+# Run performance micro-benchmarks
+python3 scripts/cpp_bridge_cli.py --benchmark
 
 # Run closed-loop numerical verifier
 python3 scripts/cpp_python_verifier.py --self-test
@@ -123,20 +108,14 @@ python3 scripts/cpp_python_verifier.py --self-test
 
 ---
 
-## Installation
+## Installation & Strict Validation
 
-### In Antigravity CLI
-Install directly into your global Antigravity plugins directory:
 ```bash
-agy plugin install /path/to/cppBridge_antigravity
-# or via GitHub
-agy plugin install https://github.com/seoym3919/cppBridge_antigravity
-```
-
-### Verification
-Verify that the plugin is strictly compliant with the Agent Plugins 1.0.0 specification:
-```bash
+# Strict validation (Agent Plugins 1.0.0)
 agy plugin validate /path/to/cppBridge_antigravity --strict
+
+# Install globally
+agy plugin install /path/to/cppBridge_antigravity
 ```
 
 ---

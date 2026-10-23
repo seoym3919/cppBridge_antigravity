@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "cppbridge",
-  "version": "0.1.0",
-  "description": "Converts legacy and modern C/C++ (C89/C99/C11/C++11/C++17/C++20) scientific algorithms and systems code into idiomatic, vectorized scientific Python (NumPy, SciPy, Numba, Dataclasses), featuring automated pointer-to-slice conversions, struct-to-dataclass modernization, pybind11 wrapper generation, and closed-loop equivalence verification.",
+  "version": "0.2.0",
+  "description": "Enterprise-grade modernization and translation engine for legacy and modern C/C++ (C89/C99/C11/C++11/C++17/C++20) scientific algorithms and systems code into idiomatic, vectorized scientific Python (NumPy, SciPy, Numba, Dataclasses) or compiled pybind11 C-extensions. Features automated de-pointerization, struct-to-dataclass conversion, OpenMP-to-Numba translation, C++ STL container decompilation, BLAS/LAPACK and Eigen modernization, Boost C++ library mappings (Boost.Math, Boost.Random, Boost.MultiArray), multi-file include DAG linking, and closed-loop equivalence verification.",
   "author": {
     "name": "scienceStack & Antigravity Scientific Team"
   },
@@ -16,6 +16,11 @@
     "depointerize",
     "pybind11",
     "dataclasses",
+    "openmp",
+    "stl-containers",
+    "eigen",
+    "blas-lapack",
+    "boost-math",
     "scientific-computing",
     "code-translation"
   ]

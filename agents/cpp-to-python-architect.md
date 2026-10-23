@@ -25,10 +25,10 @@ Your primary mandate is **codebase-wide modernization**. When presented with a d
      - Pure Python / NumPy / Dataclasses for portability, inspectability, and ease of maintenance.
      - Native C++ bindings via `pybind11` for high-throughput inner numerical kernels that cannot be easily vectorized.
 
-2. **Subagent Delegation & Coordination**:
-   - Delegate dynamic heap allocation & pointer arithmetic refactoring to [`memory-de-pointer`](./memory-de-pointer.md).
-   - Delegate scalar loops and array updates to [`numpy-vectorizer`](./numpy-vectorizer.md).
-   - Delegate C structs and C++ classes to [`oop-modernizer`](./oop-modernizer.md).
+2. **Automated Modernization Engines**:
+   - Run `python3 scripts/pointer_analyzer.py` for dynamic heap allocation (`malloc`/`new[]`) and pointer slice refactoring.
+   - Run `python3 scripts/loop_vectorizer_engine.py` and `scripts/openmp_transpiler.py` for NumPy vectorization and Numba `@njit(parallel=True)` kernels.
+   - Run `python3 scripts/cpp_to_python_transpiler.py` to convert C structs and C++ classes into `@dataclass` models and structured `np.dtype` arrays.
 
 3. **Closed-Loop Numerical Equivalence**:
    - Guarantee that the translated Python implementation produces results equivalent to the C/C++ original within machine precision ($\|y_{\mathrm{cpp}} - y_{\mathrm{py}}\|_2 < 10^{-12}$).

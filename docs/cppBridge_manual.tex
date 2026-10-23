@@ -409,7 +409,7 @@ A modernized Python implementation is formally certified as mathematically equiv
 \section{Subagent Architecture and Tooling}
 % =============================================================================
 
-The \textbf{cppBridge} plugin integrates four specialized Antigravity subagents:
+The \textbf{cppBridge} plugin integrates a consolidated Antigravity subagent and on-demand skill gating (`disable-model-invocation: true` on specialized sub-skills) to minimize per-turn token footprint (~304 tok/turn):
 
 \begin{table}[h]
 \centering
@@ -418,13 +418,10 @@ The \textbf{cppBridge} plugin integrates four specialized Antigravity subagents:
 \toprule
 \textbf{Subagent} & \textbf{Model} & \textbf{Role} \\
 \midrule
-\texttt{cpp-to-python-architect} & Pro (Claude 3.7 / Opus) & Lead translation planner and coordinator \\
-\texttt{numpy-vectorizer} & Flash (Gemini 2.5 Flash) & Scientific Python vectorization and Numba JIT \\
-\texttt{memory-de-pointer} & Flash (Gemini 2.5 Flash) & Pointer deconstruction and memory safety audit \\
-\texttt{oop-modernizer} & Flash (Gemini 2.5 Flash) & Struct, Class, and Dataclass transformations \\
+\texttt{cpp-to-python-architect} & \texttt{Model: "pro"} (\texttt{claude-opus-5-5-high} / \texttt{claude-sonnet-5-5-high} / \texttt{gemini-4-argon-high}) & Whole-codebase DAG linking, de-pointerization, NumPy/Numba vectorization, and \texttt{pybind11} packaging \\
 \bottomrule
 \end{tabular}
-\caption{Specialized Subagent Routing in cppBridge.}
+\caption{Consolidated Subagent Routing in cppBridge.}
 \end{table}
 
 % =============================================================================

@@ -123,6 +123,9 @@ python3 scripts/cpp_bridge_cli.py --self-test
 # 5. Run performance micro-benchmarks and closed-loop numerical verifier
 python3 scripts/cpp_bridge_cli.py --benchmark
 python3 scripts/cpp_python_verifier.py --self-test
+
+# 6. Run the 29-test unit suite (tokenizer transpiler, numerics vs NumPy, CLI flags & Python 3.10 portability)
+python3 -B -m unittest discover -s tests -v
 \end{lstlisting}
 
 % =============================================================================

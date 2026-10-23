@@ -92,6 +92,9 @@ python3 scripts/header_linker.py /path/to/cpp_project
 
 # 5. Run full 12-subsystem verification suite
 python3 scripts/cpp_bridge_cli.py --self-test
+
+# 6. Run the 29-test unit suite (tokenizer transpiler, numerics vs NumPy, CLI flags & Python 3.10 portability)
+python3 -B -m unittest discover -s tests -v
 ```
 
 ---
@@ -101,7 +104,7 @@ python3 scripts/cpp_bridge_cli.py --self-test
 ```
    C / C++ Source (C89 / C99 / C11 / C++11 / C++17 / C++20)
               │
-              ├──► [cpp_to_python_transpiler] ──► AST, Function Headers & Control Flow
+              ├──► [cpp_to_python_transpiler] ──► Tokenizer Core, AST Validation & NotImplementedError Guards
               │
               ├──► [pointer_analyzer]         ──► malloc/calloc/new[] -> np.zeros / np.empty
               │                                   *(ptr + i) -> ptr[i], &arr[i] -> arr[i:]

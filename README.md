@@ -141,4 +141,4 @@ python3 scripts/cpp_bridge_cli.py --self-test
 
 ## 4. License
 
-MIT License. Designed and maintained by `seoym3919` as part of the Antigravity scientific ecosystem alongside `scienceStack`, `theoryReverse`, and `fortranBridge`.
+MIT License. Designed and maintained by `seoym3919` as part of the Antigravity scientific ecosystem alongside `scienceStack`, `theoryExtractor`, and `fortranBridge`.

@@ -41,7 +41,7 @@ Verify installation status:
 ```bash
 agy plugin list
 # - cppbridge (enabled, 0.2.0)
-#   Components: 13 skills, 4 agents, 1 rule
+#   Components: 13 skills, 1 agent, 1 rule
 ```
 
 ---

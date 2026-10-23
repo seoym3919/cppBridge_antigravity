@@ -1,6 +1,7 @@
 ---
 name: bind-pybind11
 description: Generates turnkey pybind11 C++ extension wrappers and setup.py with zero-copy NumPy array support (py::array_t) for high-performance native execution.
+disable-model-invocation: true
 ---
 
 # /bind-pybind11

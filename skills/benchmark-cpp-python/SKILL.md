@@ -1,6 +1,7 @@
 ---
 name: benchmark-cpp-python
 description: Benchmarks execution runtimes across scalar Python, vectorized NumPy, and Numba JIT, generating speedup metrics and Markdown comparison tables.
+disable-model-invocation: true
 ---
 
 # /benchmark-cpp-python

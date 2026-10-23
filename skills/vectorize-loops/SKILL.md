@@ -1,6 +1,7 @@
 ---
 name: vectorize-loops
 description: Transforms scalar C/C++ loops and array mutations into vectorized NumPy expressions, SciPy operations, and Numba JIT accelerated kernels.
+disable-model-invocation: true
 ---
 
 # /vectorize-loops

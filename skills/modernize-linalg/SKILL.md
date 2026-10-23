@@ -1,6 +1,7 @@
 ---
 name: modernize-linalg
 description: Translates BLAS, LAPACK, and C++ Eigen linear algebra calls (dgemm, ddot, MatrixXd, cross, dot, solve) into vectorized numpy.linalg and scipy.linalg operations.
+disable-model-invocation: true
 ---
 
 # /modernize-linalg

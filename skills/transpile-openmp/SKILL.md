@@ -1,6 +1,7 @@
 ---
 name: transpile-openmp
 description: Decompiles C/C++ OpenMP multithreading pragmas (#pragma omp parallel for, critical, atomic) into Python Numba prange and multithreaded runtime routines.
+disable-model-invocation: true
 ---
 
 # /transpile-openmp

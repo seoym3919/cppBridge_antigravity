@@ -1,6 +1,7 @@
 ---
 name: decompile-stl
 description: Decompiles C++ Standard Template Library (STL) containers (vector, array, map, set, pair) and algorithms (sort, reverse, clamp) into idiomatic Python and NumPy.
+disable-model-invocation: true
 ---
 
 # /decompile-stl

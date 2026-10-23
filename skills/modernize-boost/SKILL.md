@@ -1,6 +1,7 @@
 ---
 name: modernize-boost
 description: Translates Boost C++ libraries (boost::math special functions, boost::multi_array, boost::random, boost::filesystem) into Python, SciPy, and NumPy equivalents.
+disable-model-invocation: true
 ---
 
 # /modernize-boost

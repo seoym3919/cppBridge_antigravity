@@ -1,6 +1,7 @@
 ---
 name: decompile-printf
 description: Decompiles legacy C printf/sprintf/fprintf format descriptors and C++ std::cout stream chains into Python 3 f-strings with precision specifiers.
+disable-model-invocation: true
 ---
 
 # /decompile-printf

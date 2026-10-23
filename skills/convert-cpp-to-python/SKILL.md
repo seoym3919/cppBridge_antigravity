@@ -1,11 +1,12 @@
 ---
 name: convert-cpp-to-python
-description: Master translation command to convert legacy and modern C/C++ codebases, directories, or files into idiomatic scientific Python with NumPy, SciPy, and Dataclasses.
+description: Converts C/C++ codebases into vectorized scientific Python packages (NumPy/SciPy/Numba/Dataclasses) or pybind11 C-extensions.
 ---
 
 # /convert-cpp-to-python
 
 Translates entire C/C++ codebase directories, repositories, or individual source files into modern, typed Python using NumPy arrays, Python dataclasses, and vectorized expressions or native pybind11 C-extensions.
+Bundled sub-skills live at `../<name>/SKILL.md` (`bind-pybind11`, `benchmark-cpp-python`, `decompile-printf`, `decompile-stl`, `depointerize`, `link-cpp-project`, `modernize-boost`, `modernize-linalg`, `struct-to-dataclass`, `transpile-openmp`, `vectorize-loops`, `verify-cpp-python`).
 
 ## Usage
 

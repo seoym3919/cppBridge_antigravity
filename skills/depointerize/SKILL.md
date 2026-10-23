@@ -1,6 +1,7 @@
 ---
 name: depointerize
 description: Audits C/C++ raw pointers, pointer arithmetic, dynamic allocations (malloc/calloc/new), and out-parameters, converting them to safe NumPy arrays, slices, and Python return tuples.
+disable-model-invocation: true
 ---
 
 # /depointerize

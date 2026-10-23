@@ -1,6 +1,6 @@
 ---
 name: cpp-to-python-architect
-description: Lead architectural coordinator that reverse-engineers and translates legacy and modern C/C++ codebases and directories into idiomatic scientific Python with NumPy, SciPy, and Dataclasses.
+description: Translates C/C++ codebases into vectorized scientific Python (NumPy/SciPy/Numba/Dataclasses) or pybind11 extensions with pointer elimination.
 ---
 
 # `cpp-to-python-architect`

@@ -1,6 +1,7 @@
 ---
 name: struct-to-dataclass
 description: Converts C structs, typedef structs, unions, and C++ classes into modern Python @dataclass definitions and companion contiguous NumPy structured dtypes.
+disable-model-invocation: true
 ---
 
 # /struct-to-dataclass

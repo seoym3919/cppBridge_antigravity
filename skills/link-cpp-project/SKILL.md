@@ -1,6 +1,7 @@
 ---
 name: link-cpp-project
 description: Analyzes multi-file C/C++ project headers and source files, extracts include DAGs, computes topological sort order, and generates structured Python packages.
+disable-model-invocation: true
 ---
 
 # /link-cpp-project

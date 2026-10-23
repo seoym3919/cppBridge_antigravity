@@ -1,6 +1,7 @@
 ---
 name: verify-cpp-python
 description: Closed-loop numerical equivalence testing engine comparing C/C++ outputs against translated Python routines across parameter sweeps, asserting L_2 and L_infinity norms < 1e-12.
+disable-model-invocation: true
 ---
 
 # /verify-cpp-python

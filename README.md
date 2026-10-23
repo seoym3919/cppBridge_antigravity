@@ -20,7 +20,89 @@ It automates the most complex aspects of C/C++ to Python migration:
 
 ---
 
-## Architecture & Translation Pipeline
+## 1. Installation & How to Use
+
+### Installation
+
+Install `cppBridge` globally or locally in Google Antigravity:
+
+```bash
+# 1. Validate compliance with Agent Plugins 1.0.0 (Strict mode)
+agy plugin validate /home/seo3919/AI_skills/cppBridge_antigravity --strict
+
+# 2. Install globally in Antigravity
+agy plugin install /home/seo3919/AI_skills/cppBridge_antigravity
+
+# Or install from GitHub:
+# agy plugin install seoym3919/cppBridge_antigravity
+```
+
+Verify installation status:
+```bash
+agy plugin list
+# - cppbridge (enabled, 0.2.0)
+#   Components: 13 skills, 4 agents, 1 rule
+```
+
+---
+
+### How to Use
+
+#### Method A: Interactive Slash Commands in Antigravity
+
+In the Antigravity chat, interact directly with C/C++ modernization skills:
+
+| Command | Action & Modernization Capability | Example Prompt |
+| :--- | :--- | :--- |
+| **`/convert-cpp-to-python`** | Master migration command: translates C/C++ files to idiomatic scientific Python with full reports. | `/convert-cpp-to-python solver.c -o solver.py` |
+| **`/depointerize`** | Audits raw pointers (`malloc`, `free`, `*ptr`) and converts them to safe NumPy arrays and slices. | `/depointerize buffer_manager.cpp` |
+| **`/vectorize-loops`** | Converts scalar for-loops and mutations into vectorized NumPy expressions or Numba `@njit`. | `/vectorize-loops stencil_kernel.c` |
+| **`/struct-to-dataclass`** | Converts C structs and C++ classes into Python `@dataclass` models and companion `np.dtype`. | `/struct-to-dataclass particle_types.h` |
+| **`/transpile-openmp`** | Maps `#pragma omp parallel for` directly into `@njit(parallel=True)` with `numba.prange`. | `/transpile-openmp monte_carlo.cpp` |
+| **`/decompile-stl`** | Maps STL containers (`vector`, `array`, `map`, `pair`) and algorithms to Python/NumPy. | `/decompile-stl container_logic.cpp` |
+| **`/modernize-linalg`** | Maps BLAS/LAPACK and Eigen matrix routines to `numpy.linalg` and `scipy.linalg`. | `/modernize-linalg linalg_core.cpp` |
+| **`/modernize-boost`** | Maps `boost::math` special functions and `boost::multi_array` to SciPy and NumPy. | `/modernize-boost bessel_solver.cpp` |
+| **`/bind-pybind11`** | Generates zero-copy C++ `pybind11` extension wrappers (`py::array_t`) and `setup.py`. | `/bind-pybind11 heavy_solver.cpp --module-name native_solver` |
+| **`/link-cpp-project`** | Analyzes `#include` DAGs, computes topological build order, and generates a packaged Python library. | `/link-cpp-project /path/to/cpp_src/` |
+| **`/decompile-printf`** | Converts `printf`, `sprintf`, `fprintf`, and `std::cout` chains into Python 3 f-strings. | `/decompile-printf logger.cpp` |
+| **`/benchmark-cpp-python`** | Measures speedups and benchmarks scalar Python vs. vectorized NumPy vs. Numba JIT. | `/benchmark-cpp-python solver.py` |
+| **`/verify-cpp-python`** | Closed-loop equivalence tester asserting output differences satisfy $L_2, L_\infty < 10^{-12}$. | `/verify-cpp-python solver.c solver.py` |
+
+#### Method B: Subagent Autonomous Orchestration
+
+Antigravity automatically delegates tasks across 4 specialized subagents:
+- **`cpp-to-python-architect`** (`Model: "pro"`): Master translation coordinator and architectural planner.
+- **`numpy-vectorizer`** (`Model: "flash"`): High-performance NumPy array vectorization and Numba specialist.
+- **`memory-de-pointer`** (`Model: "flash"`): Memory de-pointerization and slice-safety specialist.
+- **`oop-modernizer`** (`Model: "flash"`): Struct, class, and data model modernizer.
+
+#### Method C: Standalone Zero-Token CLI (Offline Execution)
+
+Modernize code directly in your terminal at zero LLM token cost:
+
+```bash
+# 1. Run full 12-subsystem verification suite
+python3 scripts/cpp_bridge_cli.py --self-test
+
+# 2. Modernize C source into vectorized Python with translation report
+python3 scripts/cpp_bridge_cli.py -i examples/nbody_simulation.c -o examples/nbody_simulation.py --report examples/translation_report.md
+
+# 3. Generate native pybind11 extension wrappers with zero-copy NumPy buffers
+python3 scripts/cpp_bridge_cli.py -i examples/nbody_simulation.c --pybind11 --module-name nbody_native
+
+# 4. Link an entire multi-file C/C++ project into a structured Python package
+python3 scripts/cpp_bridge_cli.py --link /path/to/cpp_project
+
+# 5. Run performance micro-benchmarks
+python3 scripts/cpp_bridge_cli.py --benchmark
+
+# 6. Verify mathematical output equivalence against reference implementation
+python3 scripts/cpp_python_verifier.py --self-test
+```
+
+---
+
+## 2. Architecture & Translation Pipeline
 
 ```
    C / C++ Source (C89 / C99 / C11 / C++11 / C++17 / C++20)
@@ -55,7 +137,7 @@ It automates the most complex aspects of C/C++ to Python migration:
 
 ---
 
-## Specialized Subagents
+## 3. Specialized Subagents
 
 | Subagent | Recommended Model | Primary Role |
 |---|---|---|
@@ -66,60 +148,6 @@ It automates the most complex aspects of C/C++ to Python migration:
 
 ---
 
-## Skills & Slash Commands (13 Skills)
-
-1. **`/convert-cpp-to-python`**: Master translation command for C/C++ files.
-2. **`/depointerize`**: Audits pointer allocations, dereferences, and slice views.
-3. **`/vectorize-loops`**: Eliminates scalar loops and maps element-wise mutations to NumPy / Numba.
-4. **`/struct-to-dataclass`**: Converts structs and classes into Python `@dataclass` and `np.dtype`.
-5. **`/transpile-openmp`**: Converts `#pragma omp parallel for` into Numba `prange`.
-6. **`/decompile-stl`**: Maps `std::vector`, `std::map`, and STL algorithms to Python / NumPy.
-7. **`/modernize-linalg`**: Maps BLAS/LAPACK and Eigen to `numpy.linalg` and `scipy.linalg`.
-8. **`/modernize-boost`**: Maps `boost::math`, `boost::multi_array`, and `boost::random` to SciPy / NumPy.
-9. **`/link-cpp-project`**: Analyzes multi-file include DAGs and generates Python packages.
-10. **`/decompile-printf`**: Converts `printf`, `sprintf`, `fprintf`, and `std::cout` to f-strings.
-11. **`/bind-pybind11`**: Generates zero-copy `pybind11` C++ wrappers and `setup.py`.
-12. **`/benchmark-cpp-python`**: Measures speedups across scalar Python, NumPy, and Numba JIT.
-13. **`/verify-cpp-python`**: Asserts continuous numerical output equivalence ($L_2 < 10^{-12}$).
-
----
-
-## CLI Usage
-
-```bash
-# Run full 12-subsystem test suite
-python3 scripts/cpp_bridge_cli.py --self-test
-
-# Transpile C code to Python with full modernization report
-python3 scripts/cpp_bridge_cli.py -i examples/nbody_simulation.c -o examples/nbody_simulation.py --report examples/translation_report.md
-
-# Generate pybind11 native wrapper and setup.py
-python3 scripts/cpp_bridge_cli.py -i examples/nbody_simulation.c --pybind11 --module-name nbody_native
-
-# Link a multi-file C/C++ project into a Python package
-python3 scripts/cpp_bridge_cli.py --link /path/to/cpp_project
-
-# Run performance micro-benchmarks
-python3 scripts/cpp_bridge_cli.py --benchmark
-
-# Run closed-loop numerical verifier
-python3 scripts/cpp_python_verifier.py --self-test
-```
-
----
-
-## Installation & Strict Validation
-
-```bash
-# Strict validation (Agent Plugins 1.0.0)
-agy plugin validate /path/to/cppBridge_antigravity --strict
-
-# Install globally
-agy plugin install /path/to/cppBridge_antigravity
-```
-
----
-
-## License
+## 4. License
 
 MIT License. Designed and maintained by `seoym3919` as part of the Antigravity scientific ecosystem alongside `scienceStack`, `theoryReverse`, and `fortranBridge`.

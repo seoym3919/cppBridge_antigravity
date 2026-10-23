@@ -60,6 +60,77 @@ High-performance scientific computing, computational astrophysics, orbital mecha
 \newpage
 
 % =============================================================================
+\section{Installation and How to Use}
+% =============================================================================
+
+\subsection{Installation and System Requirements}
+The \texttt{cppBridge} plugin complies strictly with Agent Plugins Specification 1.0.0. It requires Python 3.9+ with standard scientific Python packages (\texttt{numpy}, \texttt{scipy}, and optionally \texttt{numba} and \texttt{pybind11}).
+
+To validate and install the plugin globally within Google Antigravity:
+\begin{lstlisting}[language=bash]
+# 1. Validate compliance strictly against Agent Plugins 1.0.0
+agy plugin validate /home/seo3919/AI_skills/cppBridge_antigravity --strict
+
+# 2. Install globally in Antigravity
+agy plugin install /home/seo3919/AI_skills/cppBridge_antigravity
+\end{lstlisting}
+
+Verify active status in Antigravity:
+\begin{lstlisting}[language=bash]
+agy plugin list
+# - cppbridge (enabled, 0.2.0)
+#   Components: 13 skills, 4 agents, 1 rule
+\end{lstlisting}
+
+\subsection{How to Use: Antigravity Slash Commands}
+Within the Antigravity chat interface, users interact directly with modernization workflows:
+\begin{itemize}
+    \item \texttt{/convert-cpp-to-python <file>}: Master modernization entrypoint converting C/C++ files to Python.
+    \item \texttt{/depointerize <file>}: Audits pointers and converts \texttt{malloc/free} and raw dereferences to NumPy arrays and slices.
+    \item \texttt{/vectorize-loops <file>}: Replaces scalar iteration with vectorized NumPy expressions or Numba \texttt{@njit}.
+    \item \texttt{/struct-to-dataclass <file>}: Modernizes structs and classes into Python \texttt{@dataclass} and structured \texttt{np.dtype}.
+    \item \texttt{/transpile-openmp <file>}: Maps \texttt{\#pragma omp parallel for} into Numba \texttt{@njit(parallel=True)} with \texttt{prange}.
+    \item \texttt{/decompile-stl <file>}: Maps \texttt{std::vector}, \texttt{std::map}, and STL algorithms to Python/NumPy equivalents.
+    \item \texttt{/modernize-linalg <file>}: Modernizes BLAS, LAPACK, and Eigen linear algebra into \texttt{numpy.linalg} and \texttt{scipy.linalg}.
+    \item \texttt{/modernize-boost <file>}: Modernizes \texttt{boost::math} and \texttt{boost::multi\_array} to SciPy and NumPy.
+    \item \texttt{/bind-pybind11 <file>}: Generates zero-copy \texttt{pybind11} C++ wrappers with NumPy buffer protocol.
+    \item \texttt{/link-cpp-project <dir>}: Analyzes multi-file \texttt{\#include} DAGs and packages modular Python libraries.
+    \item \texttt{/decompile-printf <file>}: Converts \texttt{printf} and \texttt{std::cout} chains into Python 3 f-strings.
+    \item \texttt{/verify-cpp-python <file>}: Closed-loop equivalence tester asserting continuous relative $L_2 \le 10^{-12}$.
+\end{itemize}
+
+\subsection{Subagent Delegation Architecture}
+Complex modernization tasks are automatically routed to specialized subagents:
+\begin{itemize}
+    \item \textbf{\texttt{cpp-to-python-architect}} (\texttt{Model: "pro"}): Lead modernization architect and multi-file project planner.
+    \item \textbf{\texttt{numpy-vectorizer}} (\texttt{Model: "flash"}): High-performance NumPy array vectorization and Numba specialist.
+    \item \textbf{\texttt{memory-de-pointer}} (\texttt{Model: "flash"}): Pointer de-referencing and slice safety specialist.
+    \item \textbf{\texttt{oop-modernizer}} (\texttt{Model: "flash"}): Struct, union, and class modernization engineer.
+\end{itemize}
+
+\subsection{How to Use: Standalone Command-Line Execution}
+For offline environments or zero-token local processing, all engines run via direct CLI commands:
+\begin{lstlisting}[language=bash]
+# Run full 12-subsystem verification suite
+python3 scripts/cpp_bridge_cli.py --self-test
+
+# Modernize C code to Python with full modernization report
+python3 scripts/cpp_bridge_cli.py -i simulation.c -o simulation.py --report report.md
+
+# Generate pybind11 native wrapper and setup.py
+python3 scripts/cpp_bridge_cli.py -i simulation.c --pybind11 --module-name sim_native
+
+# Link an entire multi-file C/C++ project into a structured Python package
+python3 scripts/cpp_bridge_cli.py --link /path/to/cpp_project
+
+# Run performance micro-benchmarks
+python3 scripts/cpp_bridge_cli.py --benchmark
+
+# Run closed-loop numerical verifier
+python3 scripts/cpp_python_verifier.py --self-test
+\end{lstlisting}
+
+% =============================================================================
 \section{Introduction and the C/C++ Modernization Mandate}
 % =============================================================================
 
